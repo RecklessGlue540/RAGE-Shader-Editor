@@ -13,7 +13,7 @@ namespace ShaderEditor
 			for (int a = 0; a < fragCount; a++)
 			{
 				xmlWriter.WriteStartElement("Item");
-				ShaderUtils.WriteShader(frag[a].shader, $"{FileInfo.filePath}\\{FileInfo.baseFileName}\\{frag[a].name}.fxc");
+				ShaderUtils.WriteShader(frag[a].shader, $"{FileInfo.filePath}\\{FileInfo.baseFileName}\\{frag[a].name}.asm"); // Setting this to .asm so that the output assembly shaders aren't mistakenly set an .fxc extension
 				xmlWriter.WriteElementString("Name", frag[a].name);
 				xmlWriter.WriteElementString("DataType", $"{"asm"}");
 				xmlWriter.WriteElementString("File", $"{FileInfo.baseFileName}\\{frag[a].name}.fxc");
@@ -266,7 +266,10 @@ namespace ShaderEditor
 			for (int a = 0; a < fxc.pixelFragmentCount; a++) GetFragVariablesData(ref fxc.pixelFragment[a]);
 
 			Settings.platform = (int)DataUtils.ePlatform.PC;
-			Settings.shaderExportModePC = 0;
+
+			// No idea why this was set originally, as the shaders can correctly disassemble to .asm
+			//Settings.shaderExportModePC = 0;
+
 			XmlWriterSettings settings = new XmlWriterSettings();
 			settings.Indent = true;
 			// other settings...

@@ -302,8 +302,12 @@ namespace ShaderEditor
 		{
 
 			if (!Directory.Exists($"{FileInfo.filePath}\\{FileInfo.baseFileName}"))
+			{
 				Directory.CreateDirectory($"{FileInfo.filePath}\\{FileInfo.baseFileName}");
+			}
+
 			string shader1 = "";
+
 			if (Settings.platform == (int)DataUtils.ePlatform.PC)
 			{
 				switch (Settings.shaderExportModePC)

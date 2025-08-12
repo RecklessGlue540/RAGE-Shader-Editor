@@ -14,7 +14,7 @@ namespace ShaderEditor
 			{
 				xmlWriter.WriteStartElement("Item");
 				//tempstring = ShaderUtils.shaderExportMode < 1 ? "bytecode" : "asm";
-				ShaderUtils.WriteShader(frag[a].shader, $"{FileInfo.filePath}\\{FileInfo.baseFileName}\\{frag[a].name}.fxc");
+				ShaderUtils.WriteShader(frag[a].shader, $"{FileInfo.filePath}\\{FileInfo.baseFileName}\\{frag[a].name}.asm"); // Setting this to .asm so that the output assembly shaders aren't mistakenly set an .fxc extension
 				//if (Settings.platform == (int)DataUtils.ePlatform.Xenon)
 				//	if (Settings.shaderExportModeXenon == 0) tempstring = "bytecode";
 				//	else tempstring = "asm";
