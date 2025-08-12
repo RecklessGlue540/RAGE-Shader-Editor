@@ -1,33 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShaderEditor
 {
 	public class ShaderUtils
 	{
 		//static string myDLLPath = $"{System.Reflection.Assembly.GetEntryAssembly().Location}\\dlls\\FX2.dll";
-		[DllImport("dlls\\fx.dll", EntryPoint = "math_add", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("fx.dll", EntryPoint = "math_add", CallingConvention = CallingConvention.StdCall)]
 		static extern int Add(int a, int b);
 
-		[DllImport("dlls\\fx.dll", EntryPoint = "bytecode_to_asm", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("fx.dll", EntryPoint = "bytecode_to_asm", CallingConvention = CallingConvention.StdCall)]
 		//[return: MarshalAs(UnmanagedType.BStr)]
 		static extern int Disassemble(byte[] buf, int buflen, byte[] outShader, int[] newSize);
 
-		[DllImport("dlls\\fx.dll", EntryPoint = "asm_to_bytecode", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("fx.dll", EntryPoint = "asm_to_bytecode", CallingConvention = CallingConvention.StdCall)]
 		static extern int Assemble(string shader, uint shaderSize, byte[] pDestination, int[] DestSize, byte[] err, int[] errSize);
 
 		//[DllImport("dlls\\fx.dll", EntryPoint = "get_asm_shader_size", CallingConvention = CallingConvention.StdCall)]
 		//static extern int GetASMSize(string shader, uint shaderSize);
 
-		[DllImport("dlls\\fx.dll", EntryPoint = "hlsl_to_bytecode", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("fx.dll", EntryPoint = "hlsl_to_bytecode", CallingConvention = CallingConvention.StdCall)]
 		static extern int Compile(string shader, uint shaderSize, byte[] pDestination, int DestSize, string entryPoint, string profile);
 
-		[DllImport("dlls\\fx.dll", EntryPoint = "get_hlsl_shader_size", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("fx.dll", EntryPoint = "get_hlsl_shader_size", CallingConvention = CallingConvention.StdCall)]
 		static extern int GetHLSLSize(string shader, uint shaderSize, string entryPoint, string profile);
 
 		int CompileHLSL(string inShader, ref byte[] pDestination, string entryPoint, string profile)
@@ -227,13 +224,13 @@ namespace ShaderEditor
 		}
 
 		public static void CheckPlatform_IV(Structures.FXC_IV fxc)
-		/*
-		Проверяем первый шейдер fxc файла.
-		приоритет Xenon меньше, чем в PC, поэтому проверка не идеальная.
-		Проверка состоит из проверки 4-х байтов в начале шейдера, которые совпадают только в однаковых профилях и платформах
+        /*
+		We check the first shader of the fxc file
+        Xenon's priority is less than in PC, so the check is not ideal
+        The check consists of checking 4 bytes at the beginning of the shader, which match only in the same profiles and platforms
 		*/
-		{
-			int isPC = 0;
+        {
+            int isPC = 0;
 			int isXenon = 0;
 			for (int a = 0; a < fxc.vertexFragmentCount; a++)
 				if (fxc.vertexFragmentCount > 0)

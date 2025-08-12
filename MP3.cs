@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace ShaderEditor
@@ -250,8 +247,8 @@ namespace ShaderEditor
 		}
 		public static void FXCToIV(BinaryReader br)
 		{
-			Settings.CheckShaderExport(); // проверяем есть ли dll для работы с шейдером
-			Structures.FXC_MP3_SM3 fxc = new Structures.FXC_MP3_SM3();
+			Settings.CheckShaderExport(); // We check whether there is a .dll for working with the shader or not
+            Structures.FXC_MP3_SM3 fxc = new Structures.FXC_MP3_SM3();
 			ReadStructures.ReadFXC_MP3(br, ref fxc);
 
 			for (int a = 0; a < fxc.vertexFragmentCount; a++) GetFragVariablesData(ref fxc.vertexFragment[a]);
@@ -261,8 +258,8 @@ namespace ShaderEditor
 		}
 		public static void ReadFXC(BinaryReader br)
 		{
-			Settings.CheckShaderExport(); // проверяем есть ли dll для работы с шейдером
-			Structures.FXC_MP3_SM3 fxc = new Structures.FXC_MP3_SM3();
+			Settings.CheckShaderExport(); // We check whether there is a .dll for working with the shader or not
+            Structures.FXC_MP3_SM3 fxc = new Structures.FXC_MP3_SM3();
 			ReadStructures.ReadFXC_MP3(br, ref fxc);
 
 			for (int a = 0; a < fxc.vertexFragmentCount; a++) GetFragVariablesData(ref fxc.vertexFragment[a]);

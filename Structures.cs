@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace ShaderEditor
 {
@@ -16,21 +10,24 @@ namespace ShaderEditor
 		//	byte size;
 		//	char[] name;
 		//}
+
 		public struct SM3_VERSION
 		{
 			public byte version2;
 			public byte version1;
 		}
+
 		public struct SM3_COMMENTS_VARIABLE_TYPE
 		{
 			public ushort type1;
 			public ushort type2;
 			public ushort count1;
-			public ushort count2;// основной
+			public ushort count2;     // основной
 			public ushort arrayCount;
 			public ushort _fa;
 			public ushort _fc;
 		}
+
 		public struct SM3_COMMENTS_VARIABLE
 		{
 			public string name;
@@ -45,43 +42,47 @@ namespace ShaderEditor
 		public struct SM3_COMMENTS
 		{
 			public uint _f0;
-			public string creator; // = pos + 12
+			public string creator;      // = pos + 12
 			public SM3_VERSION version;
 			public ushort shaderType;
 			public uint paramCount;
 			public uint _f10;
 			public uint _f14;
-			public string profile; //
+			public string profile;
 			public SM3_COMMENTS_VARIABLE[] variables;
 		}
+
 		public struct SM3
 		{
 			public SM3_VERSION version;
-			public ushort shaderType;   // 0xffff - pixel, 0xfeffff - vertex
-			public ushort _f4;   // 0xfeffff
-			public ushort bytecodePosition;//= pos + 8
-			public uint CTAB;//
+			public ushort shaderType;       // 0xffff - pixel, 0xfeffff - vertex
+			public ushort _f4;              // 0xfeffff
+			public ushort bytecodePosition; //= pos + 8
+			public uint CTAB;
 			public SM3_COMMENTS comments;
 			public byte[] bytecode;
-
 		}
+
 		public struct ANNOTATION_VALUE
 		{
 			public int intValue;       // 0
 			public float floatValue;   // 1
 			public string stringValue; // 2
 		}
+
 		public struct ANNOTATION
 		{
 			public string name;
 			public byte valueType;
 			public ANNOTATION_VALUE value;
 		}
+
 		public struct VARIABLE_VALUE
 		{
 			public float floatValue;
 			public int intValue;
 		}
+
 		public struct VARIABLE
 		{
 			public byte type;
@@ -93,17 +94,20 @@ namespace ShaderEditor
 			public byte valueCount;
 			public VARIABLE_VALUE[] value;
 		}
+
 		public struct SHADER_VARIABLE
 		{
 			public ushort type;
 			public ushort index;
 			public string name;
 		}
+
 		public struct PASS_VALUE
 		{
 			public uint type;
 			public uint value;
 		}
+
 		public struct PASS
 		{
 			public byte vs;
@@ -111,21 +115,24 @@ namespace ShaderEditor
 			public byte valueCount;
 			public PASS_VALUE[] value;
 		}
+
 		public struct TECHNIQUE
 		{
 			public string name;
 			public byte passCount;
 			public PASS[] pass;
 		}
+
 		public struct FRAGMENT
 		{
-			public string name;			// в оригинальном шейдера нет имени, но для удобства я добавил.
-			public byte variablesCount;
+			public string name;                // There is no name in the original shader, but I added it for convenience
+            public byte variablesCount;
 			public SHADER_VARIABLE[] variable;
 			public ushort shaderSize;
-			public ushort shaderSize2;   // во всех rage-играх кроме rdr
-			public byte[] shader;
+			public ushort shaderSize2;         // In all RAGE games except RDR1
+            public byte[] shader;
 		}
+
 		public struct FXC_IV
 		{
 			public uint magic;
@@ -142,6 +149,7 @@ namespace ShaderEditor
 			public byte techniquesCount;
 			public TECHNIQUE[] technique;
 		}
+
 		// Max Payne 3
 		public struct PASS_MP3
 		{
@@ -154,6 +162,7 @@ namespace ShaderEditor
 			public byte valueCount;
 			public PASS_VALUE[] value;
 		}
+
 		public struct TECHNIQUE_MP3
 		{
 			public string name;
@@ -169,10 +178,10 @@ namespace ShaderEditor
 			public byte group;
 			public string name1;
 			public string name2;
-			public byte unk0;//offset. -1 
-			public byte unk1;//variant. -1
-			public byte unk2;//unused0
-			public byte unk3;//unused1
+			public byte unk0; //offset. -1 
+			public byte unk1; //variant. -1
+			public byte unk2; //unused0
+			public byte unk3; //unused1
 			public byte unk4;
 			public byte unk5;
 			public byte unk6;
@@ -182,18 +191,21 @@ namespace ShaderEditor
 			public byte valueCount;
 			public VARIABLE_VALUE[] value;
 		}
+
 		public struct PRESETPARAM_VALUE
 		{
 			public int intValue;       // 0
 			public float floatValue;   // 1
 			public string stringValue; // 2
 		}
+
 		public struct PRESETPARAM
 		{
 			public string name;
 			public byte valueType;
 			public PRESETPARAM_VALUE value;
 		}
+
 		public struct FXC_MP3_SM3
 		{
 			public uint magic;
@@ -236,8 +248,8 @@ namespace ShaderEditor
 			public byte techniquesCount;
 			public TECHNIQUE_MP3[] technique;
 		}
-
 	}
+
 	public class ReadStructures
 	{
 		static void ReadStringWithoutSize(BinaryReader br, ref string text)
@@ -251,17 +263,17 @@ namespace ShaderEditor
 				else break;
 			}
 		}
+
 		static void ReadSM3_COMMENTS(BinaryReader br, ref Structures.SM3_COMMENTS comment)
 		{
 			comment._f0= br.ReadUInt16();
 		}
+
 		static void ReadAssembledSM3(BinaryReader br, ref Structures.SM3 shader, int shaderSize)
 		{
 			shader.version.version1 = br.ReadByte();
 			shader.version.version2 = br.ReadByte();
 			shader.shaderType = br.ReadUInt16();
-
-
 		}
 
 		/*---=================---*/
@@ -281,6 +293,7 @@ namespace ShaderEditor
 					break;
 			}
 		}
+
 		public static void ReadANNOTATION(BinaryReader fxc, ref Structures.ANNOTATION var)
 		{
 			//Structures::ANNOTATION tmp;
@@ -288,6 +301,7 @@ namespace ShaderEditor
 			var.valueType = fxc.ReadByte();
 			ReadANNOTATION_VALUE(fxc, ref var.value, var.valueType);
 		}
+
 		public static void ReadVARIABLE_VALUE(BinaryReader fxc, ref Structures.VARIABLE_VALUE val, byte paramType)
 		{
 			//Structures::VARIABLE_VALUE tmp;
@@ -298,6 +312,7 @@ namespace ShaderEditor
 			if (paramType == 1 || paramType == 6 || paramType == 7) val.intValue = fxc.ReadInt32();
 			else val.floatValue = fxc.ReadSingle();
 		}
+
 		public static void ReadVARIABLE_IV(BinaryReader fxc, ref Structures.VARIABLE var)
 		{
 			//Structures.VARIABLE tmp;
@@ -314,12 +329,14 @@ namespace ShaderEditor
 			for (int a = 0; a < var.valueCount; a++)
 				ReadVARIABLE_VALUE(fxc, ref var.value[a], var.type);
 		}
+
 		public static void ReadPASS_VALUE(BinaryReader fxc, ref Structures.PASS_VALUE val)
 		{
 			//Structures::PASS_VALUE tmp;
 			val.type = fxc.ReadUInt32();
 			val.value = fxc.ReadUInt32();
 		}
+
 		public static void ReadPASS(BinaryReader fxc, ref Structures.PASS pass)
 		{
 			//Structures::PASS tmp;
@@ -331,6 +348,7 @@ namespace ShaderEditor
 			for (int a = 0; a < pass.valueCount; a++)
 				ReadPASS_VALUE(fxc, ref pass.value[a]);
 		}
+
 		public static void ReadTECHNIQUE(BinaryReader fxc, ref Structures.TECHNIQUE teq)
 		{
 			//Structures.TECHNIQUE tmp;
@@ -340,12 +358,14 @@ namespace ShaderEditor
 			for (int a = 0; a < teq.passCount; a++)
 				ReadPASS(fxc, ref teq.pass[a]);
 		}
+
 		public static void ReadSHADER_VARIABLE(BinaryReader fxc, ref Structures.SHADER_VARIABLE var)
 		{
 			var.type = fxc.ReadUInt16();
 			var.index = fxc.ReadUInt16();
 			var.name = DataUtils.ReadString(fxc);
 		}
+
 		public static void ReadFRAGMENT(BinaryReader fxc, ref Structures.FRAGMENT frag)
 		{
 			frag.variablesCount = fxc.ReadByte();
@@ -368,9 +388,9 @@ namespace ShaderEditor
 			Array.Resize<Structures.FRAGMENT>(ref fxc_iv.vertexFragment, fxc_iv.vertexFragmentCount);
 			for (int a = 0; a < fxc_iv.vertexFragmentCount; a++)
 				ReadFRAGMENT(fxc, ref fxc_iv.vertexFragment[a]);
-			fxc_iv.pixelFragmentCount = fxc.ReadByte();
-			fxc_iv.pixelFragmentCount--;
-			fxc_iv.unk1 = fxc.ReadByte();
+            fxc_iv.pixelFragmentCount = fxc.ReadByte();
+            fxc_iv.pixelFragmentCount--;
+            fxc_iv.unk1 = fxc.ReadByte();
 			fxc_iv.unk2 = fxc.ReadUInt32();
 			Array.Resize<Structures.FRAGMENT>(ref fxc_iv.pixelFragment, fxc_iv.pixelFragmentCount);
 			for (int a = 0; a < fxc_iv.pixelFragmentCount; a++)
@@ -403,6 +423,7 @@ namespace ShaderEditor
 					fxc_iv.pixelFragment[a].name = $"ps{a}";
 			}
 		}
+
 		// Max Payne 3
 		public static void ReadPASS_MP3(BinaryReader fxc, ref Structures.PASS_MP3 pass)
 		{
@@ -439,6 +460,7 @@ namespace ShaderEditor
 		//	var.index = fxc.ReadUInt16();
 			var.name = DataUtils.ReadString(fxc);
 		}
+
 		public static void ReadFRAGMENT_MP3(BinaryReader fxc, ref Structures.FRAGMENT frag)
 		{
 			frag.name = DataUtils.ReadString(fxc);
@@ -453,33 +475,35 @@ namespace ShaderEditor
 			//memmove(tmp.shader, tmpShader, tmp.shaderSize);
 			//delete[] tmpShader;
 		}
-		public static void ReadVARIABLE_MP3(BinaryReader fxc, ref Structures.VARIABLE_MP3 var)
-		{
-			//Structures.VARIABLE tmp;
-			var.type = fxc.ReadByte();
-			var.arrayCount = fxc.ReadByte();
-			var.slot = fxc.ReadByte();
-			var.group = fxc.ReadByte();
-			var.name1 = DataUtils.ReadString(fxc);
-			var.name2 = DataUtils.ReadString(fxc);
-			var.unk0 = fxc.ReadByte();
-			var.unk1 = fxc.ReadByte();
-			var.unk2 = fxc.ReadByte();
-			var.unk3 = fxc.ReadByte();
-			var.unk4 = fxc.ReadByte();
-			var.unk5 = fxc.ReadByte();
-			var.unk6 = fxc.ReadByte();
-			var.unk7 = fxc.ReadByte();
+
+        public static void ReadVARIABLE_MP3(BinaryReader fxc, ref Structures.VARIABLE_MP3 var)
+        {
+            //Structures.VARIABLE tmp;
+            var.type = fxc.ReadByte();
+            var.arrayCount = fxc.ReadByte();
+            var.slot = fxc.ReadByte();
+            var.group = fxc.ReadByte();
+            var.name1 = DataUtils.ReadString(fxc);
+            var.name2 = DataUtils.ReadString(fxc);
+            var.unk0 = fxc.ReadByte();
+            var.unk1 = fxc.ReadByte();
+            var.unk2 = fxc.ReadByte();
+            var.unk3 = fxc.ReadByte();
+            var.unk4 = fxc.ReadByte();
+            var.unk5 = fxc.ReadByte();
+            var.unk6 = fxc.ReadByte();
+            var.unk7 = fxc.ReadByte();
 			var.annotationCount = fxc.ReadByte();
-			Array.Resize<Structures.ANNOTATION>(ref var.annotation, var.annotationCount);
-			for (int a = 0; a < var.annotationCount; a++)
-				ReadANNOTATION(fxc, ref var.annotation[a]);
-			var.valueCount = fxc.ReadByte();
-			Array.Resize<Structures.VARIABLE_VALUE>(ref var.value, var.valueCount);
-			for (int a = 0; a < var.valueCount; a++)
-				ReadVARIABLE_VALUE(fxc, ref var.value[a], var.type);
-		}
-		public static void ReadPRESETPARAM_VALUE(BinaryReader fxc, ref Structures.PRESETPARAM_VALUE var, byte type)
+            Array.Resize<Structures.ANNOTATION>(ref var.annotation, var.annotationCount);
+            for (int a = 0; a < var.annotationCount; a++)
+                ReadANNOTATION(fxc, ref var.annotation[a]);
+            var.valueCount = fxc.ReadByte();
+            Array.Resize<Structures.VARIABLE_VALUE>(ref var.value, var.valueCount);
+            for (int a = 0; a < var.valueCount; a++)
+                ReadVARIABLE_VALUE(fxc, ref var.value[a], var.type);
+        }
+
+        public static void ReadPRESETPARAM_VALUE(BinaryReader fxc, ref Structures.PRESETPARAM_VALUE var, byte type)
 		{
 			//Structures.ANNOTATION_VALUE tmp;
 			switch (type)
@@ -495,6 +519,7 @@ namespace ShaderEditor
 					break;
 			}
 		}
+
 		public static void ReadPRESETPARAM(BinaryReader fxc, ref Structures.PRESETPARAM var)
 		{
 			//Structures::ANNOTATION tmp;
@@ -502,12 +527,14 @@ namespace ShaderEditor
 			var.valueType = fxc.ReadByte();
 			ReadPRESETPARAM_VALUE(fxc, ref var.value, var.valueType);
 		}
+
 		public static void ReadFXC_MP3(BinaryReader fxc, ref Structures.FXC_MP3_SM3 fxc_mp3)
 		{
 			fxc_mp3.magic = fxc.ReadUInt32();
 			fxc_mp3.vertexFormat = fxc.ReadUInt32();
 			fxc_mp3.presetParamCount = fxc.ReadByte();
-			for (int a = 0; a < fxc_mp3.presetParamCount; a++)
+            Array.Resize<Structures.PRESETPARAM>(ref fxc_mp3.presetParam, fxc_mp3.presetParamCount);
+            for (int a = 0; a < fxc_mp3.presetParamCount; a++)
 				ReadPRESETPARAM(fxc, ref fxc_mp3.presetParam[a]);
 
 			fxc_mp3.vertexFragmentCount = fxc.ReadByte();
@@ -515,45 +542,50 @@ namespace ShaderEditor
 			for (int a = 0; a < fxc_mp3.vertexFragmentCount; a++)
 				ReadFRAGMENT_MP3(fxc, ref fxc_mp3.vertexFragment[a]);
 
-			fxc_mp3.pixelFragmentCount = fxc.ReadByte();
-			fxc_mp3.pixelFragmentCount--;
-			fxc_mp3.pixelUnkName = DataUtils.ReadString(fxc);
+            //fxc_mp3.pixelFragmentCount = fxc.ReadByte();
+            //fxc_mp3.pixelFragmentCount--;
+            fxc_mp3.pixelFragmentCount = (byte)Math.Max(fxc.ReadByte() - 1, 0);
+            fxc_mp3.pixelUnkName = DataUtils.ReadString(fxc);
 			fxc_mp3.pixelUnk1 = fxc.ReadByte();
 			fxc_mp3.pixelUnk2 = fxc.ReadUInt32();
 			Array.Resize<Structures.FRAGMENT>(ref fxc_mp3.pixelFragment, fxc_mp3.pixelFragmentCount);
 			for (int a = 0; a < fxc_mp3.pixelFragmentCount; a++)
 				ReadFRAGMENT_MP3(fxc, ref fxc_mp3.pixelFragment[a]);
 
-			fxc_mp3.computeFragmentCount = fxc.ReadByte();
-			fxc_mp3.computeFragmentCount--;
-			fxc_mp3.computeUnkName = DataUtils.ReadString(fxc);
+            //fxc_mp3.computeFragmentCount = fxc.ReadByte();
+            //fxc_mp3.computeFragmentCount--;
+            fxc_mp3.computeFragmentCount = (byte)Math.Max(fxc.ReadByte() - 1, 0);
+            fxc_mp3.computeUnkName = DataUtils.ReadString(fxc);
 			fxc_mp3.computeUnk1 = fxc.ReadByte();
 			fxc_mp3.computeUnk2 = fxc.ReadUInt32();
 			Array.Resize<Structures.FRAGMENT>(ref fxc_mp3.computeFragment, fxc_mp3.computeFragmentCount);
 			for (int a = 0; a < fxc_mp3.computeFragmentCount; a++)
 				ReadFRAGMENT_MP3(fxc, ref fxc_mp3.computeFragment[a]);
 
-			fxc_mp3.domainFragmentCount = fxc.ReadByte();
-			fxc_mp3.domainFragmentCount--;
-			fxc_mp3.domainUnkName = DataUtils.ReadString(fxc);
+            //fxc_mp3.domainFragmentCount = fxc.ReadByte();
+            //fxc_mp3.domainFragmentCount--;
+            fxc_mp3.domainFragmentCount = (byte)Math.Max(fxc.ReadByte() - 1, 0);
+            fxc_mp3.domainUnkName = DataUtils.ReadString(fxc);
 			fxc_mp3.domainUnk1 = fxc.ReadByte();
 			fxc_mp3.domainUnk2 = fxc.ReadUInt32();
 			Array.Resize<Structures.FRAGMENT>(ref fxc_mp3.domainFragment, fxc_mp3.domainFragmentCount);
 			for (int a = 0; a < fxc_mp3.domainFragmentCount; a++)
 				ReadFRAGMENT_MP3(fxc, ref fxc_mp3.domainFragment[a]);
 
-			fxc_mp3.geometryFragmentCount = fxc.ReadByte();
-			fxc_mp3.geometryFragmentCount--;
-			fxc_mp3.geometryUnkName = DataUtils.ReadString(fxc);
+            //fxc_mp3.geometryFragmentCount = fxc.ReadByte();
+            //fxc_mp3.geometryFragmentCount--;
+            fxc_mp3.geometryFragmentCount = (byte)Math.Max(fxc.ReadByte() - 1, 0);
+            fxc_mp3.geometryUnkName = DataUtils.ReadString(fxc);
 			fxc_mp3.geometryUnk1 = fxc.ReadByte();
 			fxc_mp3.geometryUnk2 = fxc.ReadUInt32();
 			Array.Resize<Structures.FRAGMENT>(ref fxc_mp3.geometryFragment, fxc_mp3.geometryFragmentCount);
 			for (int a = 0; a < fxc_mp3.geometryFragmentCount; a++)
 				ReadFRAGMENT_MP3(fxc, ref fxc_mp3.geometryFragment[a]);
 
-			fxc_mp3.hullFragmentCount = fxc.ReadByte();
-			fxc_mp3.hullFragmentCount--;
-			fxc_mp3.hullUnkName = DataUtils.ReadString(fxc);
+            //fxc_mp3.hullFragmentCount = fxc.ReadByte();
+            //fxc_mp3.hullFragmentCount--;
+            fxc_mp3.hullFragmentCount = (byte)Math.Max(fxc.ReadByte() - 1, 0);
+            fxc_mp3.hullUnkName = DataUtils.ReadString(fxc);
 			fxc_mp3.hullUnk1 = fxc.ReadByte();
 			fxc_mp3.hullUnk2 = fxc.ReadUInt32();
 			Array.Resize<Structures.FRAGMENT>(ref fxc_mp3.hullFragment, fxc_mp3.hullFragmentCount);
@@ -578,7 +610,6 @@ namespace ShaderEditor
 			Array.Resize<Structures.TECHNIQUE_MP3>(ref fxc_mp3.technique, fxc_mp3.techniquesCount);
 			for (int a = 0; a < fxc_mp3.techniquesCount; a++)
 				ReadTECHNIQUE_MP3(fxc, ref fxc_mp3.technique[a]);
-
 		}
 	}
 }

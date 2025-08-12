@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ShaderEditor
 {
@@ -14,13 +12,15 @@ namespace ShaderEditor
 			Xenon,
 			PC
 		}
+
 		public enum eGame
 		{
 			IV,
 			BlueDudeBamboozle = 2,
 			MP3
 		}
-		public static string ReadString(BinaryReader br)
+
+        public static string ReadString(BinaryReader br)
 		{
 			byte size = br.ReadByte();
 			char[] tmp = new char[size - 1];
@@ -29,7 +29,8 @@ namespace ShaderEditor
 			string tempstring = new string(tmp);
 			return tempstring;
 		}
-		public static string ReadStringAtOffset(uint p, BinaryReader br)
+
+        public static string ReadStringAtOffset(uint p, BinaryReader br)
 		{
 			uint oldPos = (uint)br.BaseStream.Position;
 			br.BaseStream.Position = p;
@@ -44,6 +45,7 @@ namespace ShaderEditor
 			br.BaseStream.Position = oldPos;
 			return tempstring;
 		}
+
 		public static void WriteString(BinaryWriter bw, string value)
 		{
 			byte size = (byte)(value.Length+1);
@@ -52,10 +54,12 @@ namespace ShaderEditor
 			bw.Write(size);
 			bw.Write(array2);
 		}
+
 		public static bool FileExists(string filename)
 		{
 			return System.IO.File.Exists(filename);
 		}
+
 		public static string TypeAsString(byte type)
 		{
 			switch (type)
@@ -72,6 +76,7 @@ namespace ShaderEditor
 			}
 			return "unkType";
 		}
+
 		public static byte TypeAsByte(string type)
 		{
 			switch (type)
@@ -88,6 +93,7 @@ namespace ShaderEditor
 			}
 			return 0;
 		}
+
 		public static byte AnnotationTypeAsByte(string type)
 		{
 			switch (type)
@@ -98,6 +104,7 @@ namespace ShaderEditor
 			}
 			return 3;
 		}
+
 		public static void Align(ref uint currentPos,uint value)
 		{
 			while (currentPos % value != 0)
@@ -110,64 +117,74 @@ namespace ShaderEditor
 			Array.Resize<byte>(ref array2, array2.Length + 1);
 			WriteToByteArray(ref array, array2, ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, uint value, ref uint pos)
 		{
 			WriteToByteArray(ref array, BitConverter.GetBytes(value), ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, int value, ref uint pos)
 		{
 			WriteToByteArray(ref array, BitConverter.GetBytes(value), ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, short value, ref uint pos)
 		{
 			WriteToByteArray(ref array, BitConverter.GetBytes(value), ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, ushort value, ref uint pos)
 		{
 			WriteToByteArray(ref array, BitConverter.GetBytes(value), ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, byte value, ref uint pos)
 		{
 			WriteToByteArray(ref array, new byte[] { value }, ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, sbyte value, ref uint pos)
 		{
 			WriteToByteArray(ref array, new byte[] { (byte)value }, ref pos);
 		}
+
 		public static void WriteValueToByteArray(ref byte[] array, float value, ref uint pos)
 		{
 			WriteToByteArray(ref array, BitConverter.GetBytes(value), ref pos);
 		}
-		//public static void WriteValueToByteArray(ref byte[] array, Vector4 value, ref uint pos)
-		//{
-		//	WriteValueToByteArray(ref array, value.X, ref pos);
-		//	WriteValueToByteArray(ref array, value.Y, ref pos);
-		//	WriteValueToByteArray(ref array, value.Z, ref pos);
-		//	WriteValueToByteArray(ref array, value.W, ref pos);
-		//}
-		//public static void WriteValueToByteArray(ref byte[] array, Matrix value, ref uint pos)
-		//{
-		//	WriteValueToByteArray(ref array, value.m0, ref pos);
-		//	WriteValueToByteArray(ref array, value.m1, ref pos);
-		//	WriteValueToByteArray(ref array, value.m2, ref pos);
-		//	WriteValueToByteArray(ref array, value.m3, ref pos);
-		//}
 
+        //public static void WriteValueToByteArray(ref byte[] array, Vector4 value, ref uint pos)
+        //{
+        //	WriteValueToByteArray(ref array, value.X, ref pos);
+        //	WriteValueToByteArray(ref array, value.Y, ref pos);
+        //	WriteValueToByteArray(ref array, value.Z, ref pos);
+        //	WriteValueToByteArray(ref array, value.W, ref pos);
+        //}
+        //public static void WriteValueToByteArray(ref byte[] array, Matrix value, ref uint pos)
+        //{
+        //	WriteValueToByteArray(ref array, value.m0, ref pos);
+        //	WriteValueToByteArray(ref array, value.m1, ref pos);
+        //	WriteValueToByteArray(ref array, value.m2, ref pos);
+        //	WriteValueToByteArray(ref array, value.m3, ref pos);
+        //}
 
-		public static void WriteToByteArray(ref byte[] array, byte[] array2, ref uint pos)
+        public static void WriteToByteArray(ref byte[] array, byte[] array2, ref uint pos)
 		{
 			for (int a = 0; a < array2.Length; a++)
 				array[pos + a] = array2[a];
 			pos += (uint)array2.Length;
 		}
 	}
+
 	public static class FileInfo
 	{
 		public static string fileName;
+
 		public static string GetFileMask(string fileName)
 		{
 			return System.IO.Path.GetExtension(fileName);
 		}
+
 		public static string fileMask
 		{
 			get
@@ -176,6 +193,7 @@ namespace ShaderEditor
 				else return "";
 			}
 		}
+
 		public static string baseFileName
 		{
 			get
@@ -199,8 +217,5 @@ namespace ShaderEditor
 				return System.Reflection.Assembly.GetEntryAssembly().Location;
 			}
 		}
-		//
-
-
 	}
 }
