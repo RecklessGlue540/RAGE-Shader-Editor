@@ -5,11 +5,12 @@ using System.Xml;
 
 namespace ShaderEditor
 {
-	internal class MP3
+	public static class MP3
 	{
 		static void writeFragToXML(XmlWriter xmlWriter, Structures.FRAGMENT[] frag, byte fragCount, string fragName)
 		{
 			xmlWriter.WriteStartElement(fragName);
+
 			for (int a = 0; a < fragCount; a++)
 			{
 				xmlWriter.WriteStartElement("Item");
@@ -18,6 +19,7 @@ namespace ShaderEditor
 				xmlWriter.WriteElementString("DataType", $"{"asm"}");
 				xmlWriter.WriteElementString("File", $"{FileInfo.baseFileName}\\{frag[a].name}.fxc");
 				xmlWriter.WriteStartElement("Variables");
+
 				for (int b = 0; b < frag[a].variablesCount; b++)
 				{
 					xmlWriter.WriteStartElement("Item");
@@ -26,15 +28,18 @@ namespace ShaderEditor
 					xmlWriter.WriteAttributeString("index", $"{frag[a].variable[b].index}");
 					xmlWriter.WriteEndElement();
 				}
+
 				xmlWriter.WriteEndElement();
 				xmlWriter.WriteEndElement();
 			}
-			xmlWriter.WriteEndElement();
 
+			xmlWriter.WriteEndElement();
 		}
+
 		static void writeVarToXML(XmlWriter xmlWriter, Structures.VARIABLE_MP3[] var, byte varCount, string nodeName)
 		{
 			xmlWriter.WriteStartElement(nodeName);
+
 			for (int a = 0; a < varCount; a++)
 			{
 				xmlWriter.WriteStartElement("Item");
@@ -45,10 +50,12 @@ namespace ShaderEditor
 				xmlWriter.WriteElementString("Name1", var[a].name1);
 				xmlWriter.WriteElementString("Name2", var[a].name2);
 				xmlWriter.WriteStartElement("Annotation");
+
 				for (int b = 0; b < var[a].annotationCount; b++)
 				{
 					xmlWriter.WriteStartElement("Item");
 					xmlWriter.WriteAttributeString("name", var[a].annotation[b].name);
+
 					switch (var[a].annotation[b].valueType)
 					{
 						case 0:
@@ -64,21 +71,34 @@ namespace ShaderEditor
 							xmlWriter.WriteAttributeString("value", $"{var[a].annotation[b].value.stringValue}");
 							break;
 					}
+
 					xmlWriter.WriteEndElement();
 				}
+
 				xmlWriter.WriteEndElement();
 				xmlWriter.WriteStartElement("Value");
+
 				if (var[a].type == 6) // sampler
 				{
 					for (int b = 0; b < var[a].valueCount; b += 2)
 					{
 						xmlWriter.WriteString("\n");
-						for (int c = 0; c < 4; c++) xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+
+						for (int c = 0; c < 4; c++)
+                        {
+                            xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+                        }
+
 						xmlWriter.WriteString($"{var[a].value[b].intValue} {var[a].value[b + 1].intValue}");
+
 						if (b == var[a].valueCount - 2)
 						{
 							xmlWriter.WriteString("\n");
-							for (int c = 0; c < 4; c++) xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+
+							for (int c = 0; c < 4; c++)
+                            {
+                                xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+                            }
 						}
 					}
 				}
@@ -87,12 +107,22 @@ namespace ShaderEditor
 					for (int b = 0; b < var[a].valueCount; b++)
 					{
 						xmlWriter.WriteString("\n");
-						for (int c = 0; c < 4; c++) xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+
+						for (int c = 0; c < 4; c++)
+                        {
+                            xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+                        }
+
 						xmlWriter.WriteString($"{var[a].value[b].intValue}");
+
 						if (b == var[a].valueCount - 1)
 						{
 							xmlWriter.WriteString("\n");
-							for (int c = 0; c < 4; c++) xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+
+							for (int c = 0; c < 4; c++)
+                            {
+                                xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+                            }
 						}
 					}
 				}
@@ -101,12 +131,22 @@ namespace ShaderEditor
 					for (int b = 0; b < var[a].valueCount; b++)
 					{
 						xmlWriter.WriteString("\n");
-						for (int c = 0; c < 4; c++) xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+
+						for (int c = 0; c < 4; c++)
+                        {
+                            xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+                        }
+
 						xmlWriter.WriteString($"{var[a].value[b].floatValue}");
+
 						if (b == var[a].valueCount - 1)
 						{
 							xmlWriter.WriteString("\n");
-							for (int c = 0; c < 4; c++) xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+
+							for (int c = 0; c < 4; c++)
+                            {
+                                xmlWriter.WriteString(xmlWriter.Settings.IndentChars);
+                            }
 						}
 					}
 				}
@@ -114,26 +154,52 @@ namespace ShaderEditor
 				xmlWriter.WriteEndElement();
 				xmlWriter.WriteEndElement();
 			}
+
 			xmlWriter.WriteEndElement();
 		}
+
 		static void writeTeqToXML(XmlWriter xmlWriter, Structures.TECHNIQUE_MP3[] teq, byte teqCount, string nodeName, Structures.FRAGMENT[] vertFrag, Structures.FRAGMENT[] pixelFrag, Structures.FRAGMENT[] computeFrag, Structures.FRAGMENT[] domainFrag, Structures.FRAGMENT[] geometryFrag, Structures.FRAGMENT[] hullFrag)
 		{
 			xmlWriter.WriteStartElement(nodeName);
+
 			for (int a = 0; a < teqCount; a++)
 			{
 				xmlWriter.WriteStartElement("Item");
 				xmlWriter.WriteElementString("Name", teq[a].name);
 				xmlWriter.WriteStartElement("Passes");
+
 				for (int b = 0; b < teq[a].passCount; b++)
 				{
 					xmlWriter.WriteStartElement("Item");
 					xmlWriter.WriteElementString("VertexShader", $"{vertFrag[teq[a].pass[b].vs].name}");
-					if (teq[a].pass[b].ps!=255) xmlWriter.WriteElementString("PixelShader", $"{pixelFrag[teq[a].pass[b].ps].name}");
-					if (teq[a].pass[b].cs != 255) xmlWriter.WriteElementString("ComputeShader", $"{computeFrag[teq[a].pass[b].ps].name}");
-					if (teq[a].pass[b].ds != 255) xmlWriter.WriteElementString("DomainShader", $"{domainFrag[teq[a].pass[b].ps].name}");
-					if (teq[a].pass[b].gs != 255) xmlWriter.WriteElementString("GeometryShader", $"{geometryFrag[teq[a].pass[b].ps].name}");
-					if (teq[a].pass[b].hs != 255) xmlWriter.WriteElementString("HullShader", $"{hullFrag[teq[a].pass[b].ps].name}");
+
+					if (teq[a].pass[b].ps!=255)
+                    {
+                        xmlWriter.WriteElementString("PixelShader", $"{pixelFrag[teq[a].pass[b].ps].name}");
+                    }
+
+					if (teq[a].pass[b].cs != 255)
+                    {
+                        xmlWriter.WriteElementString("ComputeShader", $"{computeFrag[teq[a].pass[b].ps].name}");
+                    }
+
+					if (teq[a].pass[b].ds != 255)
+                    {
+                        xmlWriter.WriteElementString("DomainShader", $"{domainFrag[teq[a].pass[b].ps].name}");
+                    }
+
+					if (teq[a].pass[b].gs != 255)
+                    {
+                        xmlWriter.WriteElementString("GeometryShader", $"{geometryFrag[teq[a].pass[b].ps].name}");
+                    }
+
+					if (teq[a].pass[b].hs != 255)
+                    {
+                        xmlWriter.WriteElementString("HullShader", $"{hullFrag[teq[a].pass[b].ps].name}");
+                    }
+
 					xmlWriter.WriteStartElement("Value");
+
 					for (int c = 0; c < teq[a].pass[b].valueCount; c++)
 					{
 						xmlWriter.WriteStartElement("Item");
@@ -141,14 +207,18 @@ namespace ShaderEditor
 						xmlWriter.WriteAttributeString("value", $"{teq[a].pass[b].value[c].value}");
 						xmlWriter.WriteEndElement();
 					}
+
 					xmlWriter.WriteEndElement();
 					xmlWriter.WriteEndElement();
 				}
+
 				xmlWriter.WriteEndElement();
 				xmlWriter.WriteEndElement();
 			}
+
 			xmlWriter.WriteEndElement();
 		}
+
 		public static void GetFragVariablesData(ref Structures.FRAGMENT frag)
 		{
 			byte[] comment = frag.shader;
@@ -179,6 +249,7 @@ namespace ShaderEditor
 			uint oldPos;
 			ushort index;
 			uint typeOffset;
+
 			for (int a = 0; a < paramCount; a++)
 			{
 				name = DataUtils.ReadStringAtOffset(br.ReadUInt32(), br);
@@ -194,11 +265,13 @@ namespace ShaderEditor
 				type4 = br.ReadUInt16();
 				br.BaseStream.Position = oldPos;
 				br.ReadUInt32();
+
 				for (int b = 0; b < frag.variablesCount; b++)
 				{
 					if (frag.variable[b].name == name)
 					{
 						frag.variable[b].index = index;
+
 						if (type1 == 0 && type2 == 2)
 						{
 							frag.variable[b].type = 1;
@@ -235,35 +308,48 @@ namespace ShaderEditor
 						{
 							frag.variable[b].type = 6;
 						}
+
 						break;
 					}
 				}
-
 			}
 
 			stream.Close();
 			br.Close();
-
 		}
+
 		public static void FXCToIV(BinaryReader br)
 		{
 			Settings.CheckShaderExport(); // We check whether there is a .dll for working with the shader or not
             Structures.FXC_MP3_SM3 fxc = new Structures.FXC_MP3_SM3();
 			ReadStructures.ReadFXC_MP3(br, ref fxc);
 
-			for (int a = 0; a < fxc.vertexFragmentCount; a++) GetFragVariablesData(ref fxc.vertexFragment[a]);
-			for (int a = 0; a < fxc.pixelFragmentCount; a++) GetFragVariablesData(ref fxc.pixelFragment[a]);
+			for (int a = 0; a < fxc.vertexFragmentCount; a++)
+            {
+                GetFragVariablesData(ref fxc.vertexFragment[a]);
+            }
 
-
+			for (int a = 0; a < fxc.pixelFragmentCount; a++)
+            {
+                GetFragVariablesData(ref fxc.pixelFragment[a]);
+            }
 		}
+
 		public static void ReadFXC(BinaryReader br)
 		{
 			Settings.CheckShaderExport(); // We check whether there is a .dll for working with the shader or not
             Structures.FXC_MP3_SM3 fxc = new Structures.FXC_MP3_SM3();
 			ReadStructures.ReadFXC_MP3(br, ref fxc);
 
-			for (int a = 0; a < fxc.vertexFragmentCount; a++) GetFragVariablesData(ref fxc.vertexFragment[a]);
-			for (int a = 0; a < fxc.pixelFragmentCount; a++) GetFragVariablesData(ref fxc.pixelFragment[a]);
+			for (int a = 0; a < fxc.vertexFragmentCount; a++)
+            {
+                GetFragVariablesData(ref fxc.vertexFragment[a]);
+            }
+
+			for (int a = 0; a < fxc.pixelFragmentCount; a++)
+            {
+                GetFragVariablesData(ref fxc.pixelFragment[a]);
+            }
 
 			Settings.platform = (int)DataUtils.ePlatform.PC;
 
@@ -271,6 +357,7 @@ namespace ShaderEditor
 			//Settings.shaderExportModePC = 0;
 
 			XmlWriterSettings settings = new XmlWriterSettings();
+
 			settings.Indent = true;
 			// other settings...
 			//settings.Encoding = Encoding.ASCII;
@@ -286,11 +373,12 @@ namespace ShaderEditor
 			xmlWriter.WriteElementString("Platform", "PC");
 			xmlWriter.WriteElementString("VertexFormat", $"{fxc.vertexFormat}");
 			xmlWriter.WriteStartElement("PresetParam");
+
 			for (int a = 0; a < fxc.presetParamCount; a++)
 			{
-				
 				xmlWriter.WriteStartElement("Item");
 				xmlWriter.WriteAttributeString("name", fxc.presetParam[a].name);
+
 				switch (fxc.presetParam[a].valueType)
 				{
 					case 0:
@@ -306,25 +394,32 @@ namespace ShaderEditor
 						xmlWriter.WriteAttributeString("value", $"{fxc.presetParam[a].value.stringValue}");
 						break;
 				}
+
 				xmlWriter.WriteEndElement();
 			}
+
 			xmlWriter.WriteEndElement();
 			xmlWriter.WriteStartElement("Shaders");
+
 			writeFragToXML(xmlWriter, fxc.vertexFragment, fxc.vertexFragmentCount, "VertexShaders");
 			writeFragToXML(xmlWriter, fxc.pixelFragment, fxc.pixelFragmentCount, "PixelShaders");
 			writeFragToXML(xmlWriter, fxc.computeFragment, fxc.computeFragmentCount, "ComputeShaders");
 			writeFragToXML(xmlWriter, fxc.domainFragment, fxc.domainFragmentCount, "DomainShaders");
 			writeFragToXML(xmlWriter, fxc.geometryFragment, fxc.geometryFragmentCount, "GeometryShaders");
 			writeFragToXML(xmlWriter, fxc.hullFragment, fxc.hullFragmentCount, "HullShaders");
+
 			xmlWriter.WriteEndElement();
 			xmlWriter.WriteStartElement("Variables");
+
 			writeVarToXML(xmlWriter, fxc.globalVariable, fxc.globalVariablesCount, "GlobalVariables");
 			writeVarToXML(xmlWriter, fxc.localVariable, fxc.localVariablesCount, "LocalVariables");
+
 			xmlWriter.WriteEndElement();
+
 			writeTeqToXML(xmlWriter, fxc.technique, fxc.techniquesCount, "Techniques", fxc.vertexFragment, fxc.pixelFragment, fxc.computeFragment, fxc.domainFragment, fxc.geometryFragment, fxc.hullFragment);
+
 			xmlWriter.WriteEndDocument();
 			xmlWriter.Close();
-
 		}
 	}
 }
